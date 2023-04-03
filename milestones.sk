@@ -1,0 +1,124 @@
+#
+#
+#   Milestones Skript - Synth#1417
+#
+#
+
+#
+#   Player Variables
+#
+on join:
+
+    # Blocks [Total mined with pickaxe]
+    if {blocks.%player%} is not set:
+        
+        set {blocks.%player%} to 0
+
+    # Foraged [Total mined with axe]
+    if {foraged.%player%} is not set:
+        
+        set {foraged.%player%} to 0
+
+    # Farmed [Total mined with hoe]
+    if {farmed.%player%} is not set:
+        
+        set {farmed.%player%} to 0
+
+#
+#   Command GUI
+#
+command /stats [<player>]:
+
+    aliases: /statistics
+    description: Shows a players stats.
+    trigger:
+
+        if arg-1 is not set:
+            
+            send "" and "&cPlease specify a player!" and "&aCorrect usage: &f/stats [player]" and ""
+
+        else:
+
+            #
+            # Set GUI items
+            #
+
+            # Blocks
+            set {blocks-showcase} to stone block named "&b&lBlocks"
+            set lore of {blocks-showcase} to "" and "&b&l| &eDescription" and "&b&l| &fBlocks mined with a pickaxe" and "" and "&b&l| &eStatistics" and "&b&l| &fBlocks: &6%{blocks.%arg-1%}%" and ""
+
+            # Foraged
+            set {foraged-showcase} to oak wood named "&b&lForaged"
+            set lore of {foraged-showcase} to "" and "&b&l| &eDescription" and "&b&l| &fBlocks mined with an axe" and "" and "&b&l| &eStatistics" and "&b&l| &fForaged: &6%{foraged.%arg-1%}%" and ""
+
+            # Farmed
+            set {farmed-showcase} to hay block named "&b&lFarmed"
+            set lore of {farmed-showcase} to "" and "&b&l| &eDescription" and "&b&l| &fCrops mined with an hoe" and "" and "&b&l| &eStatistics" and "&b&l| &fFarmed: &6%{farmed.%arg-1%}%" and ""
+
+            # info book
+            set {info-book} to enchanted book named "&d&lInfo"
+            set lore of {info-book} to "" and "&b&l| &f%arg-1%'s &b&lStatistics" and ""
+
+
+            # GUI Setup
+            set {stats-gui} to a new chest inventory with 5 row with name "%player's name%'s Stats"
+
+
+            set slot 11 of {stats-gui} to {blocks-showcase}
+            set slot 13 of {stats-gui} to {farmed-showcase}
+            set slot 15 of {stats-gui} to {foraged-showcase}
+
+            set slot 31 of {stats-gui} to {info-book}
+
+        
+            open {stats-gui} to player
+
+
+on inventory click:
+
+    if name of event-inventory is "%player's name%'s Stats":
+
+		# Blocks
+        if index of event-slot = 11:
+
+            cancel event
+
+         # Farmed
+        if index of event-slot = 13:
+
+            cancel event
+
+        # Foraged
+        if index of event-slot = 15:
+
+            cancel event
+
+        # Info Book
+        if index of event-slot = 31:
+
+            cancel event
+
+
+
+#
+#   Event Listeners
+#
+
+on break:
+
+    # Blocks [Total mined with pickaxe]
+    if player's tool is any pickaxe:
+
+        add 1 to {blocks.%player%}
+
+
+    # Foraged [Total mined with axe]
+    if player's tool is any axe:
+
+        add 1 to {foraged.%player%}
+
+    
+    # Farmed [Total mined with hoe]
+    if player's tool is any hoe:
+        
+        add 1 to {farmed.%player%}
